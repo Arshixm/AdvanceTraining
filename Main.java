@@ -1,79 +1,57 @@
-package com.multithreading;
-
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import java.util.HashMap;
 import java.util.Scanner;
-class file{
-    file()
-    {
-        try{
-        FileReader fr = new FileReader("output.txt");
-        String str = "";
-        int i;
-	    while ((i = fr.read()) != -1)str += (char)i;
-	    System.out.println("Data Stored in file : \n"+str);
-    }
-    catch(Exception e)
-    {
-        System.out.println(e);
-    }
-}
-}
-public class Main {
-	static void solve(){
-	    try{
-	        System.out.println("\tWELCOME");
-	        int option=-1,count=0;
-	        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-	        FileWriter fw = new FileWriter("output.txt");
-	        while(option!=2)
-	        {
-	            count++;
-	            System.out.println("1.Add details\n2.Exit");
-	            option=Integer.parseInt(br.readLine());
-	               int age,rollNo;
-	               String Name,Address;
-	            if(option==1)
-	            {
-	                System.out.println("Enter Name :");
-	                Name=br.readLine();
-	                System.out.println("Enter Roll Number : ");
-	                rollNo=Integer.parseInt(br.readLine());
-	                System.out.println("Enter age : ");
-	                age=Integer.parseInt(br.readLine());
-	                System.out.println("Enter Address : ");
-	                Address=br.readLine();
-	                String details=String.valueOf(count)+"."+"Name : "+Name+"\n Roll Number : "+rollNo+"\n Age : "+age+"\n Address : "+Address+"\n";
-	                System.out.println("Do you want to enter details into file :\n1.Yes\n2.No");
-	                String o=br.readLine();
-	                if(o.equals("1"))
-	                {
-	                	fw.write(details);
-	                	System.out.println("Data Stored ");
-	                }
-	                else
-	                {
-	                    fw.close();
-	                    break;
-	                }
-	            }
-	        }
-	        System.out.println("Do you want view file data on terminal :\n1.Yes\n2.No");
-	        String temp=br.readLine();
-	        if(temp.equals("1"))
-	        new file();
-	    }
-	    catch(Exception e){
-	        System.out.println(e);
-	    }
-	    finally{
-	        System.out.println("Program Completed");
-	    }
-	}
+
+class Main{
+	
 	public static void main(String[] args) {
-		solve();
+		
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter numerator and denominator : ");
+		int num = sc.nextInt();
+		int denom = sc.nextInt();
+		System.out.println(fractionToDecimal(num,denom));
 	}
+
+public static String fractionToDecimal(int numerator, int denominator) {
+	if (numerator == 0)
+		return "0";
+	if (denominator == 0)
+		return "";
+ 
+	String result = "";
+ 
+	if ((numerator < 0) ^ (denominator < 0)) {
+		result += "-";
+	}
+ 
+	long num = numerator, den = denominator;
+	num = Math.abs(num);
+	den = Math.abs(den);
+ 
+	long res = num / den;
+	result += String.valueOf(res);
+ 
+	long remainder = (num % den) * 10;
+	if (remainder == 0)
+		return result;
+ 
+	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
+	result += ".";
+	while (remainder != 0) {
+		if (map.containsKey(remainder)) {
+			int beg = map.get(remainder); 
+			String part1 = result.substring(0, beg);
+			String part2 = result.substring(beg, result.length());
+			result = part1 + "(" + part2 + ")";
+			return result;
+		}
+ 
+		map.put(remainder, result.length());
+		res = remainder / den;
+		result += String.valueOf(res);
+		remainder = (remainder % den) * 10;
+	}
+ 
+	return result;
+    }
 }
